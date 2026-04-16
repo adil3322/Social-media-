@@ -1,1349 +1,594 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Adil Khan — Full Stack Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<style>
-:root {
-  --navy: #0a0f1e;
-  --navy2: #0f1628;
-  --navy3: #141c35;
-  --gold: #c9a84c;
-  --gold2: #e8c97a;
-  --silver: #94a3b8;
-  --text: #e2e8f0;
-  --text-dim: #64748b;
-  --border: #1e2d4a;
-  --white: #f8fafc;
-}
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--navy);
-  color: var(--text);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 300;
-  line-height: 1.7;
-  overflow-x: hidden;
-}
-
-/* ─── NOISE TEXTURE OVERLAY ─── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0.4;
-}
-
-/* ─── NAVIGATION ─── */
-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  padding: 20px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(10,15,30,0.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(201,168,76,0.1);
-  transition: all 0.3s;
-}
-
-nav.scrolled {
-  padding: 14px 60px;
-  border-bottom-color: rgba(201,168,76,0.2);
-}
-
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--gold);
-  letter-spacing: 1px;
-  text-decoration: none;
-}
-
-.nav-logo span { color: var(--text); }
-
-.nav-links {
-  display: flex;
-  gap: 36px;
-  list-style: none;
-}
-
-.nav-links a {
-  color: var(--silver);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  transition: color 0.2s;
-  position: relative;
-}
-
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px; left: 0; right: 0;
-  height: 1px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transition: transform 0.2s;
-}
-
-.nav-links a:hover { color: var(--gold); }
-.nav-links a:hover::after { transform: scaleX(1); }
-
-.nav-cta {
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold) !important;
-  padding: 8px 22px;
-  border-radius: 2px;
-  transition: all 0.2s !important;
-}
-
-.nav-cta:hover { background: var(--gold) !important; color: var(--navy) !important; }
-.nav-cta::after { display: none !important; }
-
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  padding: 4px;
-}
-
-.hamburger span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background: var(--gold);
-  transition: all 0.3s;
-}
-
-/* ─── HERO ─── */
-#hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: 120px 60px 80px;
-  overflow: hidden;
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(14,30,70,0.8) 0%, transparent 60%);
-}
-
-.hero-lines {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 700px;
-}
-
-.hero-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 24px;
-  animation: fadeUp 0.8s ease both;
-}
-
-.hero-eyebrow::before {
-  content: '';
-  display: block;
-  width: 40px;
-  height: 1px;
-  background: var(--gold);
-}
-
-.hero-eyebrow span {
-  font-size: 0.8rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-}
-
-.hero-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3.5rem, 7vw, 6rem);
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--white);
-  margin-bottom: 16px;
-  animation: fadeUp 0.8s ease 0.1s both;
-}
-
-.hero-name em {
-  font-style: italic;
-  color: var(--gold);
-}
-
-.hero-title {
-  font-size: 1.1rem;
-  color: var(--silver);
-  margin-bottom: 28px;
-  letter-spacing: 0.5px;
-  animation: fadeUp 0.8s ease 0.2s both;
-}
-
-.hero-desc {
-  font-size: 1rem;
-  color: var(--text-dim);
-  max-width: 480px;
-  line-height: 1.8;
-  margin-bottom: 44px;
-  animation: fadeUp 0.8s ease 0.3s both;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  animation: fadeUp 0.8s ease 0.4s both;
-}
-
-.btn-primary {
-  background: var(--gold);
-  color: var(--navy);
-  padding: 14px 36px;
-  border: none;
-  border-radius: 2px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.2s;
-}
-
-.btn-primary:hover {
-  background: var(--gold2);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(201,168,76,0.25);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--text);
-  padding: 14px 36px;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.2s;
-}
-
-.btn-outline:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-  transform: translateY(-2px);
-}
-
-.hero-stats {
-  position: absolute;
-  right: 60px;
-  bottom: 80px;
-  display: flex;
-  gap: 48px;
-  animation: fadeUp 0.8s ease 0.5s both;
-}
-
-.stat-item { text-align: center; }
-
-.stat-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--gold);
-  line-height: 1;
-  display: block;
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 6px;
-  display: block;
-}
-
-.scroll-indicator {
-  position: absolute;
-  bottom: 36px;
-  left: 60px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--text-dim);
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  animation: fadeUp 1s ease 0.7s both;
-}
-
-.scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  animation: scrollLine 2s ease-in-out infinite;
-}
-
-@keyframes scrollLine {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-/* ─── SECTION SHARED ─── */
-section {
-  padding: 100px 60px;
-  position: relative;
-}
-
-.section-label {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-}
-
-.section-label::before {
-  content: '';
-  width: 30px;
-  height: 1px;
-  background: var(--gold);
-}
-
-.section-label span {
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-}
-
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 700;
-  color: var(--white);
-  margin-bottom: 60px;
-  line-height: 1.15;
-}
-
-.section-title em {
-  font-style: italic;
-  color: var(--gold);
-}
-
-/* ─── ABOUT ─── */
-#about { background: var(--navy2); }
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-}
-
-.about-img-wrap {
-  position: relative;
-}
-
-.about-img-box {
-  width: 100%;
-  aspect-ratio: 4/5;
-  background: var(--navy3);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.about-img-box::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
-}
-
-.about-placeholder {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 6rem;
-  font-weight: 700;
-  color: rgba(201,168,76,0.15);
-  line-height: 1;
-}
-
-.about-frame {
-  position: absolute;
-  top: -12px; right: -12px;
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
-  border: 1px solid rgba(201,168,76,0.2);
-  border-radius: 4px;
-  pointer-events: none;
-}
-
-.about-badge {
-  position: absolute;
-  bottom: -20px; left: -20px;
-  background: var(--gold);
-  color: var(--navy);
-  padding: 16px 22px;
-  border-radius: 4px;
-  font-family: 'Cormorant Garamond', serif;
-}
-
-.about-badge strong {
-  display: block;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.about-badge small {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.about-text p {
-  color: var(--silver);
-  font-size: 0.95rem;
-  line-height: 1.9;
-  margin-bottom: 20px;
-}
-
-.about-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 30px;
-}
-
-.tag {
-  border: 1px solid var(--border);
-  color: var(--silver);
-  padding: 6px 14px;
-  border-radius: 2px;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  transition: all 0.2s;
-}
-
-.tag:hover { border-color: var(--gold); color: var(--gold); }
-
-/* ─── SKILLS ─── */
-#skills { background: var(--navy); }
-
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.skill-category {
-  background: var(--navy2);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 32px;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-
-.skill-category::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--gold), transparent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s;
-}
-
-.skill-category:hover { border-color: rgba(201,168,76,0.3); transform: translateY(-4px); }
-.skill-category:hover::before { transform: scaleX(1); }
-
-.skill-icon {
-  font-size: 2rem;
-  margin-bottom: 16px;
-  display: block;
-}
-
-.skill-category h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--white);
-  margin-bottom: 20px;
-}
-
-.skill-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.skill-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.skill-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.82rem;
-  color: var(--silver);
-}
-
-.skill-pct { color: var(--gold); font-weight: 500; }
-
-.skill-bar {
-  height: 2px;
-  background: var(--border);
-  border-radius: 1px;
-  overflow: hidden;
-}
-
-.skill-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold), var(--gold2));
-  border-radius: 1px;
-  width: 0;
-  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ─── PROJECTS ─── */
-#projects { background: var(--navy2); }
-
-.projects-filter {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 48px;
-  flex-wrap: wrap;
-}
-
-.filter-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  padding: 8px 20px;
-  border-radius: 2px;
-  font-family: 'Outfit', sans-serif;
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.filter-btn:hover, .filter-btn.active {
-  border-color: var(--gold);
-  color: var(--gold);
-  background: rgba(201,168,76,0.05);
-}
-
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.project-card {
-  background: var(--navy3);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  transition: all 0.3s;
-  display: flex;
-  flex-direction: column;
-}
-
-.project-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(201,168,76,0.3);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-}
-
-.project-thumb {
-  height: 180px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.5rem;
-}
-
-.project-body {
-  padding: 24px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.project-type {
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-  margin-bottom: 10px;
-}
-
-.project-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--white);
-  margin-bottom: 10px;
-  line-height: 1.2;
-}
-
-.project-desc {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  line-height: 1.7;
-  flex: 1;
-  margin-bottom: 20px;
-}
-
-.project-tech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 20px;
-}
-
-.tech-tag {
-  background: rgba(201,168,76,0.08);
-  border: 1px solid rgba(201,168,76,0.15);
-  color: var(--gold);
-  padding: 3px 10px;
-  border-radius: 2px;
-  font-size: 0.72rem;
-  letter-spacing: 0.5px;
-}
-
-.project-links {
-  display: flex;
-  gap: 12px;
-}
-
-.proj-link {
-  font-size: 0.78rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: 500;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: color 0.2s;
-}
-
-.proj-link.live { color: var(--gold); }
-.proj-link.code { color: var(--silver); }
-.proj-link:hover { opacity: 0.8; }
-
-/* ─── EXPERIENCE ─── */
-#experience { background: var(--navy); }
-
-.timeline {
-  position: relative;
-  max-width: 800px;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-}
-
-.timeline-item {
-  padding-left: 48px;
-  margin-bottom: 56px;
-  position: relative;
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: all 0.5s ease;
-}
-
-.timeline-item.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.timeline-dot {
-  position: absolute;
-  left: -5px;
-  top: 6px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--gold);
-  border: 2px solid var(--navy);
-  box-shadow: 0 0 0 4px rgba(201,168,76,0.15);
-}
-
-.timeline-date {
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.timeline-role {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--white);
-  margin-bottom: 4px;
-}
-
-.timeline-company {
-  font-size: 0.85rem;
-  color: var(--silver);
-  margin-bottom: 14px;
-}
-
-.timeline-desc {
-  font-size: 0.88rem;
-  color: var(--text-dim);
-  line-height: 1.8;
-}
-
-/* ─── CONTACT ─── */
-#contact {
-  background: var(--navy2);
-  text-align: center;
-}
-
-.contact-inner {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.contact-inner p {
-  color: var(--silver);
-  font-size: 1rem;
-  line-height: 1.8;
-  margin-bottom: 40px;
-}
-
-.contact-email {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--gold);
-  text-decoration: none;
-  display: block;
-  margin-bottom: 48px;
-  transition: opacity 0.2s;
-}
-
-.contact-email:hover { opacity: 0.8; }
-
-.social-links {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 60px;
-}
-
-.social-link {
-  border: 1px solid var(--border);
-  color: var(--silver);
-  padding: 12px 24px;
-  border-radius: 2px;
-  text-decoration: none;
-  font-size: 0.8rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-weight: 500;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.social-link:hover { border-color: var(--gold); color: var(--gold); }
-
-/* ─── FOOTER ─── */
-footer {
-  background: var(--navy);
-  border-top: 1px solid var(--border);
-  padding: 28px 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-footer p {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  letter-spacing: 0.5px;
-}
-
-footer a {
-  color: var(--gold);
-  text-decoration: none;
-  font-size: 0.8rem;
-}
-
-/* ─── MOBILE NAV ─── */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(10,15,30,0.98);
-  z-index: 99;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 32px;
-}
-
-.mobile-menu.open { display: flex; }
-
-.mobile-menu a {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.mobile-menu a:hover { color: var(--gold); }
-
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ─── RESPONSIVE ─── */
-@media (max-width: 900px) {
-  nav { padding: 16px 24px; }
-  nav.scrolled { padding: 12px 24px; }
-  .nav-links { display: none; }
-  .hamburger { display: flex; }
-
-  section { padding: 70px 24px; }
-  #hero { padding: 120px 24px 200px; }
-
-  .hero-stats { position: static; flex-direction: row; justify-content: flex-start; margin-top: 48px; gap: 36px; }
-  .scroll-indicator { display: none; }
-
-  .about-grid { grid-template-columns: 1fr; gap: 40px; }
-  .about-img-wrap { max-width: 300px; }
-  .about-badge { bottom: -16px; left: -12px; }
-
-  .skills-grid { grid-template-columns: 1fr; }
-  .projects-grid { grid-template-columns: 1fr; }
-
-  footer { flex-direction: column; gap: 12px; padding: 24px; text-align: center; }
-}
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav id="navbar">
-  <a href="#hero" class="nav-logo">AK<span>.</span></a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#contact" class="nav-cta">Hire Me</a></li>
-  </ul>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </div>
-</nav>
-
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#about" onclick="toggleMenu()">About</a>
-  <a href="#skills" onclick="toggleMenu()">Skills</a>
-  <a href="#projects" onclick="toggleMenu()">Projects</a>
-  <a href="#experience" onclick="toggleMenu()">Experience</a>
-  <a href="#contact" onclick="toggleMenu()">Contact</a>
-</div>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-lines"></div>
-
-  <div class="hero-content">
-    <div class="hero-eyebrow">
-      <span>Full Stack Developer</span>
-    </div>
-    <h1 class="hero-name">
-      Adil<br><em>Khan</em>
-    </h1>
-    <p class="hero-title">Building digital products that matter</p>
-    <p class="hero-desc">
-      I craft clean, scalable web applications with a focus on user experience,
-      performance, and modern architecture. Available for freelance & full-time roles.
-    </p>
-    <div class="hero-actions">
-      <a href="#projects" class="btn-primary">View My Work</a>
-      <a href="#contact" class="btn-outline">Get In Touch</a>
-    </div>
-  </div>
-
-  <div class="hero-stats">
-    <div class="stat-item">
-      <span class="stat-num">10+</span>
-      <span class="stat-label">Projects</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">2+</span>
-      <span class="stat-label">Years Exp</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">5+</span>
-      <span class="stat-label">Technologies</span>
-    </div>
-  </div>
-
-  <div class="scroll-indicator">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="section-label"><span>Who I Am</span></div>
-  <h2 class="section-title">About <em>Me</em></h2>
-
-  <div class="about-grid">
-    <div class="about-img-wrap reveal">
-      <div class="about-img-box">
-        <div class="about-placeholder">AK</div>
-        <div class="about-frame"></div>
-      </div>
-      <div class="about-badge">
-        <strong>2+</strong>
-        <small>Years in Dev</small>
+import { useState } from "react";
+
+const initialPosts = [
+  {
+    id: 1,
+    user: "Zara Khan",
+    handle: "@zarakhan",
+    avatar: "ZK",
+    avatarColor: "#f472b6",
+    time: "2 min ago",
+    content: "Aaj ka din bohot acha raha 🌟 Naye project pe kaam shuru kiya aur bohot kuch seekha. Life is beautiful when you keep learning!",
+    image: null,
+    likes: 48,
+    comments: [
+      { id: 1, user: "Ali Raza", text: "MashaAllah! Bahut acha hai 🙌", avatar: "AR", color: "#60a5fa" },
+    ],
+    shares: 12,
+    liked: false,
+    followed: false,
+    showComments: false,
+  },
+  {
+    id: 2,
+    user: "Hamza Siddiqui",
+    handle: "@hamzadev",
+    avatar: "HS",
+    avatarColor: "#34d399",
+    time: "15 min ago",
+    content: "React.js seekh raha hoon aur yaar ye toh seriously mind-blowing hai 🚀 Components ka concept ekdum unique hai. Koi tips dena chahega? 💻",
+    image: null,
+    likes: 134,
+    comments: [
+      { id: 1, user: "Sara Ali", text: "Official docs best hai! 📖", avatar: "SA", color: "#fb923c" },
+      { id: 2, user: "Ahmed Bilal", text: "useState samajh lo pehle 😄", avatar: "AB", color: "#a78bfa" },
+    ],
+    shares: 27,
+    liked: false,
+    followed: false,
+    showComments: false,
+  },
+  {
+    id: 3,
+    user: "Sana Mirza",
+    handle: "@sana.m",
+    avatar: "SM",
+    avatarColor: "#fb923c",
+    time: "1 hr ago",
+    content: "Sunset ki photo li aaj Karachi mein 🌅 Nature ki khubsurti ko words mein bayaan karna mushkil hai. Alhamdulillah for such beautiful moments ✨",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
+    likes: 312,
+    comments: [],
+    shares: 89,
+    liked: false,
+    followed: false,
+    showComments: false,
+  },
+  {
+    id: 4,
+    user: "Bilal Ahmed",
+    handle: "@bilalcodes",
+    avatar: "BA",
+    avatarColor: "#a78bfa",
+    time: "3 hrs ago",
+    content: "Portfolio website finally complete ho gaya! 🎉 Itne din ki mehnat rang layi. Web development journey amazing hai — har din kuch naya seekhne ko milta hai. Link soon! 🔗",
+    image: null,
+    likes: 201,
+    comments: [
+      { id: 1, user: "Zara Khan", text: "Congratulations bhai! 🎊", avatar: "ZK", color: "#f472b6" },
+    ],
+    shares: 45,
+    liked: false,
+    followed: false,
+    showComments: false,
+  },
+];
+
+const suggestions = [
+  { name: "Fatima Noor", handle: "@fatimanoor", avatar: "FN", color: "#f472b6" },
+  { name: "Usman Tariq", handle: "@usmant", avatar: "UT", color: "#34d399" },
+  { name: "Rimsha Malik", handle: "@rimshadev", avatar: "RM", color: "#60a5fa" },
+];
+
+export default function SocialApp() {
+  const [posts, setPosts] = useState(initialPosts);
+  const [newPostText, setNewPostText] = useState("");
+  const [commentTexts, setCommentTexts] = useState({});
+  const [followed, setFollowed] = useState({});
+  const [activeTab, setActiveTab] = useState("home");
+
+  const handleLike = (id) => {
+    setPosts(posts.map(p =>
+      p.id === id ? { ...p, liked: !p.liked, likes: p.liked ? p.likes - 1 : p.likes + 1 } : p
+    ));
+  };
+
+  const handleFollow = (id) => {
+    setPosts(posts.map(p =>
+      p.id === id ? { ...p, followed: !p.followed } : p
+    ));
+  };
+
+  const handleShare = (id) => {
+    setPosts(posts.map(p =>
+      p.id === id ? { ...p, shares: p.shares + 1 } : p
+    ));
+  };
+
+  const toggleComments = (id) => {
+    setPosts(posts.map(p =>
+      p.id === id ? { ...p, showComments: !p.showComments } : p
+    ));
+  };
+
+  const addComment = (id) => {
+    const text = commentTexts[id]?.trim();
+    if (!text) return;
+    setPosts(posts.map(p =>
+      p.id === id ? {
+        ...p,
+        comments: [...p.comments, { id: Date.now(), user: "Adil", text, avatar: "AD", color: "#06b6d4" }]
+      } : p
+    ));
+    setCommentTexts({ ...commentTexts, [id]: "" });
+  };
+
+  const addPost = () => {
+    if (!newPostText.trim()) return;
+    const newPost = {
+      id: Date.now(),
+      user: "Adil",
+      handle: "@adil3322",
+      avatar: "AD",
+      avatarColor: "#06b6d4",
+      time: "Just now",
+      content: newPostText,
+      image: null,
+      likes: 0,
+      comments: [],
+      shares: 0,
+      liked: false,
+      followed: false,
+      showComments: false,
+    };
+    setPosts([newPost, ...posts]);
+    setNewPostText("");
+  };
+
+  const followSuggestion = (name) => {
+    setFollowed({ ...followed, [name]: !followed[name] });
+  };
+
+  return (
+    <div style={{
+      minHeight: "100vh",
+      background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+      fontFamily: "'Segoe UI', sans-serif",
+      color: "#e2e8f0",
+    }}>
+      {/* Top Navbar */}
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 100,
+        background: "rgba(15,12,41,0.85)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        padding: "0 24px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        height: "60px",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{
+            width: 36, height: 36, borderRadius: "10px",
+            background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "18px", fontWeight: 800, color: "#fff",
+          }}>S</div>
+          <span style={{ fontSize: "20px", fontWeight: 800, background: "linear-gradient(90deg, #06b6d4, #8b5cf6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            SocialHub
+          </span>
+        </div>
+
+        {/* Search */}
+        <div style={{ position: "relative", width: "280px" }}>
+          <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", opacity: 0.4 }}>🔍</span>
+          <input placeholder="Search posts, people..." style={{
+            width: "100%", padding: "8px 12px 8px 36px",
+            background: "rgba(255,255,255,0.07)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "20px", color: "#e2e8f0", fontSize: "13px",
+            outline: "none", boxSizing: "border-box",
+          }} />
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <span style={{ cursor: "pointer", fontSize: "20px", position: "relative" }}>
+            🔔
+            <span style={{
+              position: "absolute", top: -4, right: -4,
+              background: "#ef4444", borderRadius: "50%",
+              width: 14, height: 14, fontSize: "9px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#fff", fontWeight: 700
+            }}>3</span>
+          </span>
+          <div style={{
+            width: 36, height: 36, borderRadius: "50%",
+            background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontWeight: 700, fontSize: "13px", cursor: "pointer",
+          }}>AD</div>
+        </div>
+      </nav>
+
+      <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", gap: "24px", padding: "24px 16px" }}>
+
+        {/* Left Sidebar — Profile */}
+        <aside style={{ width: "260px", flexShrink: 0 }}>
+          <div style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "20px",
+            overflow: "hidden",
+            position: "sticky", top: "84px",
+          }}>
+            {/* Cover */}
+            <div style={{
+              height: "80px",
+              background: "linear-gradient(135deg, #06b6d4, #8b5cf6, #ec4899)",
+              position: "relative",
+            }}>
+              <div style={{ position: "absolute", bottom: -28, left: "50%", transform: "translateX(-50%)" }}>
+                <div style={{
+                  width: 60, height: 60, borderRadius: "50%",
+                  background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontWeight: 800, fontSize: "20px", color: "#fff",
+                  border: "3px solid #0f0c29",
+                }}>AD</div>
+              </div>
+            </div>
+
+            <div style={{ padding: "36px 20px 20px", textAlign: "center" }}>
+              <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 700, color: "#f1f5f9" }}>Adil</h3>
+              <p style={{ margin: "2px 0 4px", fontSize: "12px", color: "#94a3b8" }}>@adil3322</p>
+              <p style={{ margin: "8px 0 12px", fontSize: "12px", color: "#94a3b8", lineHeight: 1.5 }}>
+                Full-Stack Web Developer 🚀<br />Building cool stuff on the internet
+              </p>
+              <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", justifyContent: "center", marginBottom: "14px" }}>
+                {["React", "Node.js", "Firebase", "Django"].map(tag => (
+                  <span key={tag} style={{
+                    padding: "2px 8px", borderRadius: "10px", fontSize: "10px",
+                    background: "rgba(6,182,212,0.15)", color: "#06b6d4",
+                    border: "1px solid rgba(6,182,212,0.3)",
+                  }}>{tag}</span>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-around", padding: "12px 0", borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", marginBottom: "14px" }}>
+                {[["Posts", "24"], ["Followers", "1.2K"], ["Following", "340"]].map(([label, val]) => (
+                  <div key={label} style={{ textAlign: "center" }}>
+                    <div style={{ fontWeight: 700, fontSize: "15px", color: "#f1f5f9" }}>{val}</div>
+                    <div style={{ fontSize: "10px", color: "#64748b" }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px", color: "#94a3b8" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>📍</span> Patna, India
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>🔗</span>
+                  <a href="https://github.com/adil3322" style={{ color: "#06b6d4", textDecoration: "none" }}>github.com/adil3322</a>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span>📅</span> Joined Jan 2024
+                </div>
+              </div>
+
+              <button style={{
+                marginTop: "14px", width: "100%", padding: "9px",
+                background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+                border: "none", borderRadius: "10px", color: "#fff",
+                fontWeight: 600, fontSize: "13px", cursor: "pointer",
+              }}>✏️ Edit Profile</button>
+            </div>
+          </div>
+
+          {/* Suggestions */}
+          <div style={{
+            marginTop: "16px",
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "20px",
+            padding: "16px",
+          }}>
+            <h4 style={{ margin: "0 0 14px", fontSize: "13px", color: "#94a3b8", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>People to Follow</h4>
+            {suggestions.map(s => (
+              <div key={s.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <div style={{
+                    width: 34, height: 34, borderRadius: "50%",
+                    background: s.color, display: "flex", alignItems: "center",
+                    justifyContent: "center", fontSize: "12px", fontWeight: 700, color: "#fff",
+                    flexShrink: 0,
+                  }}>{s.avatar}</div>
+                  <div>
+                    <div style={{ fontSize: "12px", fontWeight: 600, color: "#f1f5f9" }}>{s.name}</div>
+                    <div style={{ fontSize: "10px", color: "#64748b" }}>{s.handle}</div>
+                  </div>
+                </div>
+                <button onClick={() => followSuggestion(s.name)} style={{
+                  padding: "4px 12px", borderRadius: "20px", fontSize: "11px",
+                  border: followed[s.name] ? "1px solid rgba(255,255,255,0.15)" : "1px solid #06b6d4",
+                  background: followed[s.name] ? "transparent" : "rgba(6,182,212,0.15)",
+                  color: followed[s.name] ? "#64748b" : "#06b6d4",
+                  cursor: "pointer", fontWeight: 600,
+                  transition: "all 0.2s",
+                }}>{followed[s.name] ? "Following" : "Follow"}</button>
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        {/* Main Feed */}
+        <main style={{ flex: 1, minWidth: 0 }}>
+          {/* Tabs */}
+          <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
+            {["home", "trending", "explore"].map(tab => (
+              <button key={tab} onClick={() => setActiveTab(tab)} style={{
+                padding: "8px 20px", borderRadius: "20px", border: "none",
+                background: activeTab === tab ? "linear-gradient(135deg, #06b6d4, #8b5cf6)" : "rgba(255,255,255,0.06)",
+                color: activeTab === tab ? "#fff" : "#94a3b8",
+                fontWeight: 600, fontSize: "13px", cursor: "pointer",
+                textTransform: "capitalize",
+                transition: "all 0.2s",
+              }}>{tab === "home" ? "🏠 Home" : tab === "trending" ? "🔥 Trending" : "🌐 Explore"}</button>
+            ))}
+          </div>
+
+          {/* New Post Box */}
+          <div style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "20px",
+            padding: "20px",
+            marginBottom: "20px",
+          }}>
+            <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+              <div style={{
+                width: 42, height: 42, borderRadius: "50%", flexShrink: 0,
+                background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontWeight: 700, fontSize: "14px",
+              }}>AD</div>
+              <textarea
+                placeholder="Kya soch rahe ho aaj? Share karo... ✨"
+                value={newPostText}
+                onChange={e => setNewPostText(e.target.value)}
+                rows={3}
+                style={{
+                  flex: 1, background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "12px", color: "#e2e8f0",
+                  padding: "12px", fontSize: "14px", resize: "none",
+                  outline: "none", fontFamily: "inherit",
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px", paddingLeft: "54px" }}>
+              <div style={{ display: "flex", gap: "16px" }}>
+                {["📷 Photo", "🎥 Video", "😊 Emoji"].map(btn => (
+                  <button key={btn} style={{
+                    background: "none", border: "none", color: "#64748b",
+                    fontSize: "12px", cursor: "pointer", fontWeight: 600,
+                    padding: "4px 8px", borderRadius: "8px",
+                  }}>{btn}</button>
+                ))}
+              </div>
+              <button onClick={addPost} style={{
+                padding: "8px 24px",
+                background: newPostText.trim() ? "linear-gradient(135deg, #06b6d4, #8b5cf6)" : "rgba(255,255,255,0.07)",
+                border: "none", borderRadius: "20px", color: newPostText.trim() ? "#fff" : "#475569",
+                fontWeight: 700, fontSize: "13px", cursor: newPostText.trim() ? "pointer" : "default",
+                transition: "all 0.2s",
+              }}>Post Karo 🚀</button>
+            </div>
+          </div>
+
+          {/* Posts */}
+          {posts.map(post => (
+            <div key={post.id} style={{
+              background: "rgba(255,255,255,0.05)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "20px",
+              padding: "20px",
+              marginBottom: "16px",
+              transition: "border-color 0.2s",
+            }}>
+              {/* Post Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "14px" }}>
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: "50%",
+                    background: post.avatarColor,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontWeight: 700, fontSize: "15px", color: "#fff", flexShrink: 0,
+                  }}>{post.avatar}</div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: "14px", color: "#f1f5f9" }}>{post.user}</div>
+                    <div style={{ fontSize: "12px", color: "#64748b" }}>{post.handle} · {post.time}</div>
+                  </div>
+                </div>
+                <button onClick={() => handleFollow(post.id)} style={{
+                  padding: "6px 16px", borderRadius: "20px", fontSize: "12px",
+                  border: post.followed ? "1px solid rgba(255,255,255,0.12)" : "1px solid #8b5cf6",
+                  background: post.followed ? "rgba(255,255,255,0.05)" : "rgba(139,92,246,0.15)",
+                  color: post.followed ? "#64748b" : "#a78bfa",
+                  cursor: "pointer", fontWeight: 600,
+                  transition: "all 0.2s",
+                }}>{post.followed ? "✓ Following" : "+ Follow"}</button>
+              </div>
+
+              {/* Post Content */}
+              <p style={{ margin: "0 0 14px", lineHeight: 1.6, color: "#cbd5e1", fontSize: "14px" }}>{post.content}</p>
+
+              {post.image && (
+                <div style={{ borderRadius: "12px", overflow: "hidden", marginBottom: "14px" }}>
+                  <img src={post.image} alt="post" style={{ width: "100%", display: "block", maxHeight: "300px", objectFit: "cover" }} />
+                </div>
+              )}
+
+              {/* Action Bar */}
+              <div style={{
+                display: "flex", gap: "4px",
+                paddingTop: "12px",
+                borderTop: "1px solid rgba(255,255,255,0.06)",
+              }}>
+                <button onClick={() => handleLike(post.id)} style={{
+                  display: "flex", alignItems: "center", gap: "6px",
+                  padding: "7px 14px", borderRadius: "20px", border: "none",
+                  background: post.liked ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.05)",
+                  color: post.liked ? "#f87171" : "#64748b",
+                  cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                  transition: "all 0.2s",
+                }}>
+                  {post.liked ? "❤️" : "🤍"} {post.likes}
+                </button>
+
+                <button onClick={() => toggleComments(post.id)} style={{
+                  display: "flex", alignItems: "center", gap: "6px",
+                  padding: "7px 14px", borderRadius: "20px", border: "none",
+                  background: post.showComments ? "rgba(6,182,212,0.15)" : "rgba(255,255,255,0.05)",
+                  color: post.showComments ? "#06b6d4" : "#64748b",
+                  cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                  transition: "all 0.2s",
+                }}>
+                  💬 {post.comments.length}
+                </button>
+
+                <button onClick={() => handleShare(post.id)} style={{
+                  display: "flex", alignItems: "center", gap: "6px",
+                  padding: "7px 14px", borderRadius: "20px", border: "none",
+                  background: "rgba(255,255,255,0.05)", color: "#64748b",
+                  cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                  transition: "all 0.2s",
+                }}>
+                  🔗 {post.shares}
+                </button>
+
+                <button style={{
+                  marginLeft: "auto",
+                  display: "flex", alignItems: "center", gap: "6px",
+                  padding: "7px 14px", borderRadius: "20px", border: "none",
+                  background: "rgba(255,255,255,0.05)", color: "#64748b",
+                  cursor: "pointer", fontSize: "13px", fontWeight: 600,
+                }}>🔖</button>
+              </div>
+
+              {/* Comments Section */}
+              {post.showComments && (
+                <div style={{ marginTop: "14px" }}>
+                  {post.comments.map(c => (
+                    <div key={c.id} style={{ display: "flex", gap: "10px", marginBottom: "10px", alignItems: "flex-start" }}>
+                      <div style={{
+                        width: 30, height: 30, borderRadius: "50%",
+                        background: c.color, flexShrink: 0,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "11px", fontWeight: 700, color: "#fff",
+                      }}>{c.avatar}</div>
+                      <div style={{
+                        background: "rgba(255,255,255,0.06)", borderRadius: "12px",
+                        padding: "8px 12px", flex: 1,
+                      }}>
+                        <span style={{ fontWeight: 700, fontSize: "12px", color: "#94a3b8" }}>{c.user} </span>
+                        <span style={{ fontSize: "13px", color: "#cbd5e1" }}>{c.text}</span>
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+                    <div style={{
+                      width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
+                      background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "11px", fontWeight: 700,
+                    }}>AD</div>
+                    <input
+                      placeholder="Comment likho..."
+                      value={commentTexts[post.id] || ""}
+                      onChange={e => setCommentTexts({ ...commentTexts, [post.id]: e.target.value })}
+                      onKeyDown={e => e.key === "Enter" && addComment(post.id)}
+                      style={{
+                        flex: 1, background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: "20px", color: "#e2e8f0",
+                        padding: "7px 14px", fontSize: "13px", outline: "none",
+                        fontFamily: "inherit",
+                      }}
+                    />
+                    <button onClick={() => addComment(post.id)} style={{
+                      padding: "7px 14px", borderRadius: "20px", border: "none",
+                      background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+                      color: "#fff", cursor: "pointer", fontSize: "12px", fontWeight: 600,
+                    }}>Send</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </main>
+
+        {/* Right Sidebar */}
+        <aside style={{ width: "240px", flexShrink: 0 }}>
+          {/* Trending */}
+          <div style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "20px", padding: "16px",
+            position: "sticky", top: "84px",
+          }}>
+            <h4 style={{ margin: "0 0 14px", fontSize: "13px", color: "#94a3b8", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>🔥 Trending</h4>
+            {["#WebDevelopment", "#ReactJS", "#Pakistan", "#TechLife", "#OpenSource"].map((tag, i) => (
+              <div key={tag} style={{
+                padding: "8px 0",
+                borderBottom: i < 4 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                cursor: "pointer",
+              }}>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "#06b6d4" }}>{tag}</div>
+                <div style={{ fontSize: "11px", color: "#475569" }}>{(Math.random() * 5 + 1).toFixed(1)}K posts</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Active Now */}
+          <div style={{
+            marginTop: "16px",
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "20px", padding: "16px",
+          }}>
+            <h4 style={{ margin: "0 0 14px", fontSize: "13px", color: "#94a3b8", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase" }}>🟢 Active Now</h4>
+            {[
+              { name: "Zara Khan", avatar: "ZK", color: "#f472b6" },
+              { name: "Hamza S.", avatar: "HS", color: "#34d399" },
+              { name: "Bilal A.", avatar: "BA", color: "#a78bfa" },
+            ].map(u => (
+              <div key={u.name} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                <div style={{ position: "relative" }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: "50%",
+                    background: u.color,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "11px", fontWeight: 700, color: "#fff",
+                  }}>{u.avatar}</div>
+                  <div style={{
+                    position: "absolute", bottom: 0, right: 0,
+                    width: 9, height: 9, borderRadius: "50%",
+                    background: "#22c55e", border: "2px solid #0f0c29",
+                  }} />
+                </div>
+                <span style={{ fontSize: "12px", color: "#94a3b8" }}>{u.name}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
       </div>
     </div>
-
-    <div class="about-text reveal">
-      <p>
-        Hello! I'm <strong style="color:var(--gold)">Adil Khan</strong>, a passionate Full Stack Developer
-        with a love for building elegant web solutions. I specialize in creating
-        responsive, high-performance applications from concept to deployment.
-      </p>
-      <p>
-        My journey in web development started with curiosity and grew into a
-        commitment to crafting products that are not just functional, but delightful
-        to use. I believe great software solves real problems beautifully.
-      </p>
-      <p>
-        When I'm not coding, I'm exploring new technologies, contributing to
-        open-source projects on GitHub, and continuously sharpening my skills
-        in modern full-stack development.
-      </p>
-      <div class="about-tags">
-        <span class="tag">HTML / CSS</span>
-        <span class="tag">JavaScript</span>
-        <span class="tag">React</span>
-        <span class="tag">Node.js</span>
-        <span class="tag">Django</span>
-        <span class="tag">Firebase</span>
-        <span class="tag">Git / GitHub</span>
-        <span class="tag">REST APIs</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-label"><span>Expertise</span></div>
-  <h2 class="section-title">My <em>Skills</em></h2>
-
-  <div class="skills-grid">
-    <div class="skill-category reveal">
-      <span class="skill-icon">🖥️</span>
-      <h3>Frontend</h3>
-      <div class="skill-list">
-        <div class="skill-item">
-          <div class="skill-info"><span>HTML / CSS</span><span class="skill-pct">95%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="95"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>JavaScript</span><span class="skill-pct">85%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="85"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>React.js</span><span class="skill-pct">75%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="75"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>Bootstrap / Tailwind</span><span class="skill-pct">90%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="90"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category reveal">
-      <span class="skill-icon">⚙️</span>
-      <h3>Backend</h3>
-      <div class="skill-list">
-        <div class="skill-item">
-          <div class="skill-info"><span>Python / Django</span><span class="skill-pct">80%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="80"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>Node.js / Express</span><span class="skill-pct">70%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="70"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>REST APIs</span><span class="skill-pct">85%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="85"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>Firebase</span><span class="skill-pct">75%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="75"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="skill-category reveal">
-      <span class="skill-icon">🛠️</span>
-      <h3>Tools & Others</h3>
-      <div class="skill-list">
-        <div class="skill-item">
-          <div class="skill-info"><span>Git / GitHub</span><span class="skill-pct">90%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="90"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>SQL / Databases</span><span class="skill-pct">70%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="70"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>Responsive Design</span><span class="skill-pct">95%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="95"></div></div>
-        </div>
-        <div class="skill-item">
-          <div class="skill-info"><span>VS Code / Tools</span><span class="skill-pct">88%</span></div>
-          <div class="skill-bar"><div class="skill-fill" data-w="88"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-label"><span>Portfolio</span></div>
-  <h2 class="section-title">Featured <em>Projects</em></h2>
-
-  <div class="projects-filter">
-    <button class="filter-btn active" data-filter="all">All</button>
-    <button class="filter-btn" data-filter="fullstack">Full Stack</button>
-    <button class="filter-btn" data-filter="frontend">Frontend</button>
-    <button class="filter-btn" data-filter="backend">Backend</button>
-  </div>
-
-  <div class="projects-grid" id="projectsGrid">
-
-    <div class="project-card reveal" data-category="fullstack">
-      <div class="project-thumb" style="background:linear-gradient(135deg,#0a1628,#1a3060)">🛒</div>
-      <div class="project-body">
-        <div class="project-type">Full Stack</div>
-        <h3 class="project-name">Django E-Commerce Store</h3>
-        <p class="project-desc">Full-featured online store with admin panel, user authentication, cart, search & filter, dark mode, and Bootstrap UI.</p>
-        <div class="project-tech">
-          <span class="tech-tag">Django</span>
-          <span class="tech-tag">Python</span>
-          <span class="tech-tag">Bootstrap</span>
-          <span class="tech-tag">SQLite</span>
-        </div>
-        <div class="project-links">
-          <a href="https://adil3322.github.io/E-commerce-website" target="_blank" class="proj-link live">↗ Live Demo</a>
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link code">⌥ GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="project-card reveal" data-category="fullstack">
-      <div class="project-thumb" style="background:linear-gradient(135deg,#0a1e2a,#0a3040)">💬</div>
-      <div class="project-body">
-        <div class="project-type">Full Stack</div>
-        <h3 class="project-name">Firebase Real-Time Chat</h3>
-        <p class="project-desc">Real-time chat application with Firebase auth, message history, online presence indicators, and responsive Tailwind UI.</p>
-        <div class="project-tech">
-          <span class="tech-tag">Firebase</span>
-          <span class="tech-tag">JavaScript</span>
-          <span class="tech-tag">Tailwind</span>
-        </div>
-        <div class="project-links">
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link live">↗ Live Demo</a>
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link code">⌥ GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="project-card reveal" data-category="frontend">
-      <div class="project-thumb" style="background:linear-gradient(135deg,#1a1000,#2d2000)">🌤️</div>
-      <div class="project-body">
-        <div class="project-type">Frontend</div>
-        <h3 class="project-name">Weather Dashboard</h3>
-        <p class="project-desc">5-day weather forecast app with dark mode, animated backgrounds, weather icons, and smart city name validation.</p>
-        <div class="project-tech">
-          <span class="tech-tag">HTML/CSS/JS</span>
-          <span class="tech-tag">OpenWeather API</span>
-        </div>
-        <div class="project-links">
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link live">↗ Live Demo</a>
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link code">⌥ GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="project-card reveal" data-category="fullstack">
-      <div class="project-thumb" style="background:linear-gradient(135deg,#0f1a0a,#1a3010)">📋</div>
-      <div class="project-body">
-        <div class="project-type">Full Stack</div>
-        <h3 class="project-name">Project Management Tool</h3>
-        <p class="project-desc">Team collaboration tool with task boards, assignment, progress tracking, and deadline management features.</p>
-        <div class="project-tech">
-          <span class="tech-tag">Node.js</span>
-          <span class="tech-tag">Express</span>
-          <span class="tech-tag">MongoDB</span>
-        </div>
-        <div class="project-links">
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link live">↗ Coming Soon</a>
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link code">⌥ GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="project-card reveal" data-category="backend">
-      <div class="project-thumb" style="background:linear-gradient(135deg,#1a0a20,#2a1040)">📱</div>
-      <div class="project-body">
-        <div class="project-type">Backend</div>
-        <h3 class="project-name">Social Media Platform</h3>
-        <p class="project-desc">Express.js powered social media backend with user profiles, posts, likes, comments, and follow system.</p>
-        <div class="project-tech">
-          <span class="tech-tag">Express.js</span>
-          <span class="tech-tag">Node.js</span>
-          <span class="tech-tag">REST API</span>
-        </div>
-        <div class="project-links">
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link live">↗ Coming Soon</a>
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link code">⌥ GitHub</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="project-card reveal" data-category="frontend">
-      <div class="project-thumb" style="background:linear-gradient(135deg,#0a1520,#102030)">🧰</div>
-      <div class="project-body">
-        <div class="project-type">Frontend</div>
-        <h3 class="project-name">All-Features Frontend Bundle</h3>
-        <p class="project-desc">Comprehensive web app combining e-commerce UI, local chat, login, dark mode, wishlist, to-do, and Chart.js stats.</p>
-        <div class="project-tech">
-          <span class="tech-tag">HTML/CSS/JS</span>
-          <span class="tech-tag">Chart.js</span>
-          <span class="tech-tag">LocalStorage</span>
-        </div>
-        <div class="project-links">
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link live">↗ Live Demo</a>
-          <a href="https://github.com/adil3322" target="_blank" class="proj-link code">⌥ GitHub</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="section-label"><span>Journey</span></div>
-  <h2 class="section-title">My <em>Experience</em></h2>
-
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-date">2024 — Present</div>
-      <div class="timeline-role">Full Stack Developer</div>
-      <div class="timeline-company">Freelance / Self-Employed</div>
-      <p class="timeline-desc">
-        Building full-stack web applications for clients — from Django e-commerce stores to
-        Firebase real-time apps. Managing entire project lifecycle from design to deployment on GitHub Pages.
-      </p>
-    </div>
-
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-date">2023 — 2024</div>
-      <div class="timeline-role">Frontend Developer</div>
-      <div class="timeline-company">Personal Projects & Open Source</div>
-      <p class="timeline-desc">
-        Developed and shipped 10+ frontend projects including weather dashboards, chat apps,
-        and feature-rich bundles. Maintained GitHub portfolio at github.com/adil3322.
-      </p>
-    </div>
-
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-date">2022 — 2023</div>
-      <div class="timeline-role">Web Development Learner</div>
-      <div class="timeline-company">Self-Taught</div>
-      <p class="timeline-desc">
-        Mastered HTML, CSS, JavaScript fundamentals. Built first projects and started the
-        journey into Python, Django, and modern JavaScript frameworks.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-label" style="justify-content:center"><span>Let's Connect</span></div>
-  <h2 class="section-title">Get In <em>Touch</em></h2>
-
-  <div class="contact-inner reveal">
-    <p>
-      I'm currently available for freelance projects, full-time roles, and exciting collaborations.
-      If you have a project in mind or just want to say hi — my inbox is always open.
-    </p>
-
-    <a href="mailto:adil@example.com" class="contact-email">adil@example.com</a>
-
-    <div class="social-links">
-      <a href="https://github.com/adil3322" target="_blank" class="social-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.57v-2.2c-3.34.73-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.82 1.1.82 2.22v3.3c0 .31.2.68.82.56C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        GitHub
-      </a>
-      <a href="https://linkedin.com" target="_blank" class="social-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-        LinkedIn
-      </a>
-      <a href="https://github.com/adil3322" target="_blank" class="social-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Resume
-      </a>
-    </div>
-
-    <a href="mailto:adil@example.com" class="btn-primary">Send Me an Email</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>© 2025 Adil Khan. All rights reserved.</p>
-  <a href="https://github.com/adil3322" target="_blank">github.com/adil3322</a>
-</footer>
-
-<script>
-// NAV scroll effect
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
-});
-
-// Mobile menu
-function toggleMenu() {
-  document.getElementById('mobileMenu').classList.toggle('open');
+  );
 }
-
-// Scroll reveal
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(el => {
-    if (el.isIntersecting) {
-      el.target.classList.add('visible');
-      // Animate skill bars
-      el.target.querySelectorAll('.skill-fill').forEach(bar => {
-        bar.style.width = bar.dataset.w + '%';
-      });
-      observer.unobserve(el.target);
-    }
-  });
-}, { threshold: 0.15 });
-
-document.querySelectorAll('.reveal, .timeline-item').forEach(el => observer.observe(el));
-
-// Project filter
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filter = btn.dataset.filter;
-    document.querySelectorAll('.project-card').forEach(card => {
-      const show = filter === 'all' || card.dataset.category === filter;
-      card.style.display = show ? 'flex' : 'none';
-    });
-  });
-});
-</script>
-</body>
-</html>
